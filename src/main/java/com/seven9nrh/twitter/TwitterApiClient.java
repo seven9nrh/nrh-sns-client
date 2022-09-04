@@ -10,7 +10,7 @@ public interface TwitterApiClient {
   /** Integer | The maximum number of results */
   Integer maxResults = 10;
   /** Integer | The maximum number of total results */
-  Integer maxTotalResults = 10;
+  Integer maxTotalResults = 30;
 
   /** Set<String> | A comma separated list of fields to expand. */
   Set<String> expansions = new HashSet<>(
