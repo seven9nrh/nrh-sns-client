@@ -32,4 +32,11 @@
 
   </dependencies>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/seven9nrh/nrh-sns-client</url>
+    </repository>
+  </distributionManagement>
 </project>
