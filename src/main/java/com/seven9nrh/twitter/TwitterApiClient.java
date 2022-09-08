@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import reactor.core.publisher.Flux;
 
 public interface TwitterApiClient {
   /** Integer | The maximum number of results */
@@ -60,7 +61,14 @@ public interface TwitterApiClient {
   /**
    * Recent search
    * @param query
-   * @return
+   * @return List
    */
   List<TweetData> tweetsSerchRecent(String query);
+
+  /**
+   * Recent search
+   * @param query
+   * @return Flux
+   */
+  Flux<TweetData> tweetsSerchRecentFlux(String query);
 }

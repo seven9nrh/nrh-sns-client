@@ -11,12 +11,12 @@ import com.twitter.clientlib.model.Tweet;
 import com.twitter.clientlib.model.User;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 @Component
 public class TwitterApiClientImpl implements TwitterApiClient {
@@ -31,48 +31,61 @@ public class TwitterApiClientImpl implements TwitterApiClient {
 
   @Override
   public List<TweetData> tweetsSerchRecent(String query) {
-    List<TweetData> tweetList = new ArrayList<>();
-    try {
-      Get2TweetsSearchRecentResponse result = null;
-      do {
-        APItweetsRecentSearchRequest tweetsRecentSearch = twitterApi
-          .tweets()
-          .tweetsRecentSearch(query);
-        tweetsRecentSearch
-          .expansions(expansions)
-          .tweetFields(tweetFields)
-          .userFields(userFields)
-          .maxResults(maxResults);
-        if (hasNext(result)) {
-          tweetsRecentSearch.nextToken(getNextToken(result));
-        }
-        result = tweetsRecentSearch.execute();
-        logger.info("tweetsRecentSearch:{}", result);
-        List<TweetData> tl = result
-          .getData()
-          .stream()
-          .map(this::toTweetData)
-          .collect(Collectors.toList());
-        for (TweetData t : tl) {
-          t.setUserData(
-            toUserData(
-              result
-                .getIncludes()
-                .getUsers()
-                .stream()
-                .filter(u -> u.getId().equals(t.getAuthorId()))
-                .findAny()
-                .orElse(new User())
-            )
+    return tweetsSerchRecentFlux(query).collectList().block();
+  }
+
+  @Override
+  public Flux<TweetData> tweetsSerchRecentFlux(String query) {
+    return Flux.<TweetData>create(
+      fluxSink -> {
+        try {
+          int totalCount = 0;
+          Get2TweetsSearchRecentResponse result = null;
+          do {
+            APItweetsRecentSearchRequest tweetsRecentSearch = twitterApi
+              .tweets()
+              .tweetsRecentSearch(query);
+            tweetsRecentSearch
+              .expansions(expansions)
+              .tweetFields(tweetFields)
+              .userFields(userFields)
+              .maxResults(maxResults);
+            if (hasNext(result)) {
+              tweetsRecentSearch.nextToken(getNextToken(result));
+            }
+            result = tweetsRecentSearch.execute();
+            logger.info("result {}", result);
+            List<TweetData> tl = result
+              .getData()
+              .stream()
+              .map(this::toTweetData)
+              .collect(Collectors.toList());
+            for (TweetData t : tl) {
+              t.setUserData(
+                toUserData(
+                  result
+                    .getIncludes()
+                    .getUsers()
+                    .stream()
+                    .filter(u -> u.getId().equals(t.getAuthorId()))
+                    .findAny()
+                    .orElse(new User())
+                )
+              );
+            }
+            tl.forEach(fluxSink::next);
+            totalCount += tl.size();
+          } while (hasNext(result) && totalCount <= maxTotalResults);
+          fluxSink.complete();
+        } catch (ApiException e) {
+          logger.error(
+            "Exception when calling TweetsApi#tweetsRecentSearch",
+            e
           );
+          fluxSink.error(e);
         }
-        tweetList.addAll(tl);
-      } while (hasNext(result) && tweetList.size() <= maxTotalResults);
-      return tweetList;
-    } catch (ApiException e) {
-      logger.error("Exception when calling TweetsApi#tweetsRecentSearch", e);
-      return new ArrayList<>();
-    }
+      }
+    );
   }
 
   private UserData toUserData(User user) {
