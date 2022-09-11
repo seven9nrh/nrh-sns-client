@@ -146,4 +146,31 @@ public class TweetData {
     } else if (!text.equals(other.text)) return false;
     return true;
   }
+
+  @Override
+  public String toString() {
+    return (
+      "TweetData [authorId=" +
+      authorId +
+      ", createdAt=" +
+      createdAt +
+      ", id=" +
+      id +
+      ", likeCount=" +
+      likeCount +
+      ", possiblysensitive=" +
+      possiblysensitive +
+      ", quoteCount=" +
+      quoteCount +
+      ", replyCount=" +
+      replyCount +
+      ", retweetCount=" +
+      retweetCount +
+      ", text=" +
+      text +
+      ", userData=" +
+      userData +
+      "]"
+    );
+  }
 }

@@ -75,4 +75,19 @@ public class UserData {
     } else if (!username.equals(other.username)) return false;
     return true;
   }
+
+  @Override
+  public String toString() {
+    return (
+      "UserData [description=" +
+      description +
+      ", id=" +
+      id +
+      ", name=" +
+      name +
+      ", username=" +
+      username +
+      "]"
+    );
+  }
 }
