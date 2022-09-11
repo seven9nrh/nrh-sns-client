@@ -55,26 +55,28 @@ public class TwitterApiClientImpl implements TwitterApiClient {
             }
             result = tweetsRecentSearch.execute();
             logger.info("result {}", result);
-            List<TweetData> tl = result
-              .getData()
-              .stream()
-              .map(this::toTweetData)
-              .collect(Collectors.toList());
-            for (TweetData t : tl) {
-              t.setUserData(
-                toUserData(
-                  result
-                    .getIncludes()
-                    .getUsers()
-                    .stream()
-                    .filter(u -> u.getId().equals(t.getAuthorId()))
-                    .findAny()
-                    .orElse(new User())
-                )
-              );
+            if (result.getData() != null) {
+              List<TweetData> tl = result
+                .getData()
+                .stream()
+                .map(this::toTweetData)
+                .collect(Collectors.toList());
+              for (TweetData t : tl) {
+                t.setUserData(
+                  toUserData(
+                    result
+                      .getIncludes()
+                      .getUsers()
+                      .stream()
+                      .filter(u -> u.getId().equals(t.getAuthorId()))
+                      .findAny()
+                      .orElse(new User())
+                  )
+                );
+              }
+              tl.forEach(fluxSink::next);
+              totalCount += tl.size();
             }
-            tl.forEach(fluxSink::next);
-            totalCount += tl.size();
           } while (hasNext(result) && totalCount <= maxTotalResults);
           fluxSink.complete();
         } catch (ApiException e) {
