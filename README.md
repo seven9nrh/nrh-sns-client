@@ -1,4 +1,5 @@
 # nrh-sns-client
+
 [![Java CI with Maven](https://github.com/seven9nrh/nrh-sns-client/actions/workflows/maven.yml/badge.svg)](https://github.com/seven9nrh/nrh-sns-client/actions/workflows/maven.yml)
 [![Maven Package](https://github.com/seven9nrh/nrh-sns-client/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/seven9nrh/nrh-sns-client/actions/workflows/maven-publish.yml)
 
@@ -27,6 +28,6 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>com.seven9nrh</groupId>
   <artifactId>nrh-sns-client</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 </dependency>
 ```
