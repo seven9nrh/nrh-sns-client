@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.seven9nrh</groupId>
   <artifactId>nrh-sns-client</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>nrh-sns-client</name>
   <url>https://github.com/seven9nrh/nrh-sns-client</url>
