@@ -2,8 +2,10 @@ package com.seven9nrh.twitter.impl;
 
 import com.seven9nrh.twitter.TwitterApiClient;
 import com.seven9nrh.twitter.model.TweetData;
+import com.seven9nrh.twitter.model.TwitterCredentials;
 import com.seven9nrh.twitter.model.UserData;
 import com.twitter.clientlib.ApiException;
+import com.twitter.clientlib.TwitterCredentialsBearer;
 import com.twitter.clientlib.api.TweetsApi.APItweetsRecentSearchRequest;
 import com.twitter.clientlib.api.TwitterApi;
 import com.twitter.clientlib.model.Get2TweetsSearchRecentResponse;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
@@ -23,10 +26,10 @@ public class TwitterApiClientImpl implements TwitterApiClient {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  private TwitterApi twitterApi;
+  private ApplicationContext applicationContext;
 
-  public TwitterApiClientImpl(TwitterApi twitterApi) {
-    this.twitterApi = twitterApi;
+  public TwitterApiClientImpl(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
 
   @Override
@@ -36,6 +39,14 @@ public class TwitterApiClientImpl implements TwitterApiClient {
 
   @Override
   public Flux<TweetData> tweetsSerchRecentFlux(String query) {
+    TwitterApi twitterApi = applicationContext.getBean(TwitterApi.class);
+    return tweetsSerchRecentFlux(query, twitterApi);
+  }
+
+  private Flux<TweetData> tweetsSerchRecentFlux(
+    String query,
+    TwitterApi twitterApi
+  ) {
     return Flux.<TweetData>create(
       fluxSink -> {
         try {
@@ -125,5 +136,31 @@ public class TwitterApiClientImpl implements TwitterApiClient {
       return null;
     }
     return result.getMeta().getNextToken();
+  }
+
+  @Override
+  public List<TweetData> tweetsSerchRecent(
+    String query,
+    TwitterCredentials credentials
+  ) {
+    TwitterApi twitterApi = createTwitterApi(credentials);
+    return tweetsSerchRecentFlux(query, twitterApi).collectList().block();
+  }
+
+  @Override
+  public Flux<TweetData> tweetsSerchRecentFlux(
+    String query,
+    TwitterCredentials credentials
+  ) {
+    TwitterApi twitterApi = createTwitterApi(credentials);
+    return tweetsSerchRecentFlux(query, twitterApi);
+  }
+
+  private TwitterApi createTwitterApi(TwitterCredentials credentials) {
+    var twitterCredentialsBearer = new TwitterCredentialsBearer(
+      credentials.getBearerToken()
+    );
+    TwitterApi apiInstance = new TwitterApi(twitterCredentialsBearer);
+    return apiInstance;
   }
 }

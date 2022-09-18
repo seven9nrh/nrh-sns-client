@@ -1,6 +1,7 @@
 package com.seven9nrh.twitter;
 
 import com.seven9nrh.twitter.model.TweetData;
+import com.seven9nrh.twitter.model.TwitterCredentials;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -71,4 +72,26 @@ public interface TwitterApiClient {
    * @return Flux
    */
   Flux<TweetData> tweetsSerchRecentFlux(String query);
+
+  /**
+   * Recent search
+   * @param query
+   * @param credentials
+   * @return List
+   */
+  List<TweetData> tweetsSerchRecent(
+    String query,
+    TwitterCredentials credentials
+  );
+
+  /**
+   * Recent search
+   * @param query
+   * @param credentials
+   * @return Flux
+   */
+  Flux<TweetData> tweetsSerchRecentFlux(
+    String query,
+    TwitterCredentials credentials
+  );
 }
