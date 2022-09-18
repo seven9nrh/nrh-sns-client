@@ -31,3 +31,14 @@ Add this dependency to your project's POM:
   <version>1.0.0</version>
 </dependency>
 ```
+
+Snapshot:
+Add this dependency to your project's POM:
+
+```xml
+<dependency>
+  <groupId>com.seven9nrh</groupId>
+  <artifactId>nrh-sns-client</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
+</dependency>
+```
