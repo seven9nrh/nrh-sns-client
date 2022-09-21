@@ -1,4 +1,4 @@
-package com.seven9nrh.twitter.model;
+package com.seven9nrh.twitter.tweets.model;
 
 import java.time.LocalDateTime;
 

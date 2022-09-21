@@ -1,9 +1,9 @@
-package com.seven9nrh.twitter.impl;
+package com.seven9nrh.twitter.tweets.impl;
 
-import com.seven9nrh.twitter.TwitterApiClient;
-import com.seven9nrh.twitter.model.TweetData;
 import com.seven9nrh.twitter.model.TwitterCredentials;
-import com.seven9nrh.twitter.model.UserData;
+import com.seven9nrh.twitter.tweets.SearchTweetsApi;
+import com.seven9nrh.twitter.tweets.model.TweetData;
+import com.seven9nrh.twitter.tweets.model.UserData;
 import com.twitter.clientlib.ApiException;
 import com.twitter.clientlib.TwitterCredentialsBearer;
 import com.twitter.clientlib.api.TweetsApi.APItweetsRecentSearchRequest;
@@ -22,28 +22,28 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @Component
-public class TwitterApiClientImpl implements TwitterApiClient {
+public class SearchTweetsApiImpl implements SearchTweetsApi {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   private ApplicationContext applicationContext;
 
-  public TwitterApiClientImpl(ApplicationContext applicationContext) {
+  public SearchTweetsApiImpl(ApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
   }
 
   @Override
-  public List<TweetData> tweetsSerchRecent(String query) {
-    return tweetsSerchRecentFlux(query).collectList().block();
+  public List<TweetData> tweetsSearchRecent(String query) {
+    return tweetsSearchRecentFlux(query).collectList().block();
   }
 
   @Override
-  public Flux<TweetData> tweetsSerchRecentFlux(String query) {
+  public Flux<TweetData> tweetsSearchRecentFlux(String query) {
     TwitterApi twitterApi = applicationContext.getBean(TwitterApi.class);
-    return tweetsSerchRecentFlux(query, twitterApi);
+    return tweetsSearchRecentFlux(query, twitterApi);
   }
 
-  private Flux<TweetData> tweetsSerchRecentFlux(
+  private Flux<TweetData> tweetsSearchRecentFlux(
     String query,
     TwitterApi twitterApi
   ) {
@@ -139,21 +139,21 @@ public class TwitterApiClientImpl implements TwitterApiClient {
   }
 
   @Override
-  public List<TweetData> tweetsSerchRecent(
+  public List<TweetData> tweetsSearchRecent(
     String query,
     TwitterCredentials credentials
   ) {
     TwitterApi twitterApi = createTwitterApi(credentials);
-    return tweetsSerchRecentFlux(query, twitterApi).collectList().block();
+    return tweetsSearchRecentFlux(query, twitterApi).collectList().block();
   }
 
   @Override
-  public Flux<TweetData> tweetsSerchRecentFlux(
+  public Flux<TweetData> tweetsSearchRecentFlux(
     String query,
     TwitterCredentials credentials
   ) {
     TwitterApi twitterApi = createTwitterApi(credentials);
-    return tweetsSerchRecentFlux(query, twitterApi);
+    return tweetsSearchRecentFlux(query, twitterApi);
   }
 
   private TwitterApi createTwitterApi(TwitterCredentials credentials) {
