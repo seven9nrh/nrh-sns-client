@@ -1,14 +1,14 @@
-package com.seven9nrh.twitter;
+package com.seven9nrh.twitter.tweets;
 
-import com.seven9nrh.twitter.model.TweetData;
 import com.seven9nrh.twitter.model.TwitterCredentials;
+import com.seven9nrh.twitter.tweets.model.TweetData;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import reactor.core.publisher.Flux;
 
-public interface TwitterApiClient {
+public interface SearchTweetsApi {
   /** Integer | The maximum number of results */
   Integer maxResults = 10;
   /** Integer | The maximum number of total results */
@@ -64,14 +64,14 @@ public interface TwitterApiClient {
    * @param query
    * @return List
    */
-  List<TweetData> tweetsSerchRecent(String query);
+  List<TweetData> tweetsSearchRecent(String query);
 
   /**
    * Recent search
    * @param query
    * @return Flux
    */
-  Flux<TweetData> tweetsSerchRecentFlux(String query);
+  Flux<TweetData> tweetsSearchRecentFlux(String query);
 
   /**
    * Recent search
@@ -79,7 +79,7 @@ public interface TwitterApiClient {
    * @param credentials
    * @return List
    */
-  List<TweetData> tweetsSerchRecent(
+  List<TweetData> tweetsSearchRecent(
     String query,
     TwitterCredentials credentials
   );
@@ -90,7 +90,7 @@ public interface TwitterApiClient {
    * @param credentials
    * @return Flux
    */
-  Flux<TweetData> tweetsSerchRecentFlux(
+  Flux<TweetData> tweetsSearchRecentFlux(
     String query,
     TwitterCredentials credentials
   );
